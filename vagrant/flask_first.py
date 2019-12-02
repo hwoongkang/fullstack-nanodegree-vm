@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 # * for database manipulations
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -11,6 +11,21 @@ session = DBSession()
 
 
 app = Flask(__name__)
+
+#@app.route('/')
+@app.route('/restaurants/<int:restaurant_id>/')
+def restaurantMenu(restaurant_id):
+    restaurants = session.query(Restaurant).filter_by(id = restaurant_id).one()
+    items = session.query(MenuItem).filter_by(\
+        restaurant_id = restaurant_id)
+    
+    output = ''
+    for item in items:
+        output += item.name + '</br>'
+        output += item.price + '</br>'
+        output += item.description + '</br>'
+        output += '</br>'
+
 
 @app.route('/')
 @app.route('/restaurant')
